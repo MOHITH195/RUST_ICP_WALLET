@@ -4,8 +4,11 @@ use icrc_ledger_types::icrc1::transfer::{BlockIndex, TransferArg, TransferError}
 use icrc_ledger_types::icrc2::transfer_from::{TransferFromArgs, TransferFromError};
 
 #[ic_cdk::update]
-async fn deposit_tokens(amount: u64, recepient : Principal) -> Result<BlockIndex, String> {
+async fn deposit_tokens(amount: u64) -> Result<BlockIndex, String> {
     let caller = ic_cdk::caller();
+
+    let recepient = Principal::from_text("bd3sg-teaaa-aaaaa-qaaba-cai")
+        .expect("Could not decode the principal.");
 
     let transfer_from_args = TransferFromArgs {
         from: Account::from(caller),
@@ -62,8 +65,11 @@ async fn send_tokens(amount: u64, to: Principal) -> Result<BlockIndex, String> {
 async fn get_balance() -> Result<Nat, String> {
     let caller = ic_cdk::caller();
 
+    let balanceCheck = Principal::from_text("bd3sg-teaaa-aaaaa-qaaba-cai")
+    .expect("Could not decode the principal.");
+    
     let account = Account {
-        owner: caller,
+        owner: balanceCheck,
         subaccount: None,
     };
 
@@ -82,7 +88,7 @@ async fn get_balance() -> Result<Nat, String> {
 
 #[ic_cdk::update]
 async fn example_usage(amount: u64, to: Principal) -> Result<BlockIndex, String> {
-    deposit_tokens(amount,to).await?;
+    deposit_tokens(amount).await?;
     send_tokens(amount, to).await
 }
 
